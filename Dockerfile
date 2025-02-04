@@ -3,16 +3,11 @@ FROM node:22.13.1-alpine AS builder
 
 WORKDIR /app
 
-# 设置构建参数
-ENV NODE_ENV=production \
-    DISABLE_ESLINT=true \
-    ESLINT_NO_DEV_ERRORS=true
-
 # 复制源代码
 COPY package.json yarn.lock ./
 
 # 安装依赖（包括开发依赖）
-RUN yarn install --frozen-lockfile --production=false
+RUN yarn install
 
 # 复制其他源代码
 COPY . .
