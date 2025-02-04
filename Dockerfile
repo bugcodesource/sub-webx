@@ -1,5 +1,5 @@
 # 构建阶段
-FROM node:22.13.1-alpine AS build
+FROM node:22.13.1-alpine AS builder
 
 WORKDIR /app
 
@@ -23,7 +23,6 @@ RUN yarn build
 # 清理缓存
 RUN yarn cache clean
 
-# 最终运行阶段
 FROM node:22.13.1-alpine
 
 # 创建工作目录
@@ -33,20 +32,20 @@ WORKDIR /app
 ENV NODE_ENV=production \
     PORT=8088
 
+# 从构建阶段复制构建输出和必要的文件
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/server.js ./
+
 # 安装运行时依赖（仅生产依赖）
+COPY --from=builder /app/package.json ./
+COPY --from=builder /app/yarn.lock ./
 RUN yarn install --frozen-lockfile --production
+
+# 创建数据目录并设置权限
+RUN mkdir -p /data && chown -R node:node /data
 
 # 使用非 root 用户运行
 USER node
-
-# 复制构建产物和服务器文件
-COPY --from=builder /app/dist ./dist
-COPY server.js .
-
-# 创建数据目录并设置权限
-# 设置环境变量
-ENV NODE_ENV=production \
-    PORT=8088
 
 # 健康检查
 HEALTHCHECK --interval=30s --timeout=3s \
