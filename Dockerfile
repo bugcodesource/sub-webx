@@ -36,6 +36,9 @@ ENV NODE_ENV=production \
 # 安装运行时依赖（仅生产依赖）
 RUN yarn install --frozen-lockfile --production
 
+# 使用非 root 用户运行
+USER node
+
 # 复制构建产物和服务器文件
 COPY --from=builder /app/dist ./dist
 COPY server.js .
