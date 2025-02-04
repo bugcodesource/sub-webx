@@ -23,6 +23,7 @@ RUN set -eux; \
     apk del .build-deps
 
 # 复制源代码并构建
+RUN yarn install
 COPY . .
 RUN yarn build
 
