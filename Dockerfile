@@ -1,5 +1,5 @@
 # 构建阶段
-FROM node:22.13.1-alpine AS builder
+FROM node:22.13.1 AS builder
 
 WORKDIR /app
 
@@ -24,10 +24,10 @@ RUN set -eux; \
 COPY . .
 
 # 执行构建
-RUN yarn build:no-lint
+RUN yarn build
 
 # 运行阶段
-FROM node:22.13.1-alpine
+FROM node:22.13.1
 
 # 安装 tini
 RUN apk add --no-cache tini
