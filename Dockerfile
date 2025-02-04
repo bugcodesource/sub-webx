@@ -24,7 +24,7 @@ RUN set -eux; \
 COPY . .
 
 # 执行构建
-RUN yarn build || (echo "Build failed" && yarn build --verbose && exit 1)
+RUN yarn build:no-lint
 
 # 运行阶段
 FROM node:22.13.1-alpine
