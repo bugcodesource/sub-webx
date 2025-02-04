@@ -56,6 +56,10 @@
         {
           "label": "Basic(仅GEOIP CN + Final)",
           "value": "https://cdn.jsdelivr.net/gh/SleepyHeeead/subconverter-config@master/remote-config/special/basic.ini"
+        },
+        {
+          "label": "新配置项",
+          "value": "aaaAAAAAAAA"
         }
       ]
     }
@@ -69,6 +73,9 @@
     },
     {
       "value": "https://api.dler.io/sub?"
+    },
+    {
+      "value": "111111111111/sub?"
     }
   ]
 }

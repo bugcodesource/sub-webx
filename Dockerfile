@@ -6,8 +6,8 @@ WORKDIR /app
 # 复制源代码
 COPY package.json yarn.lock ./
 
-# 安装依赖（包括开发依赖）
-RUN yarn install && yarn add express
+# 安装所有依赖
+RUN yarn install
 
 # 复制其他源代码
 COPY . .
@@ -15,9 +15,7 @@ COPY . .
 # 执行构建
 RUN yarn build
 
-# 清理缓存
-RUN yarn cache clean
-
+# 生产阶段
 FROM node:22.13.1-alpine
 
 # 创建工作目录
@@ -30,6 +28,8 @@ ENV NODE_ENV=production \
 # 从构建阶段复制构建输出和必要的文件
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/server.js ./
+COPY --from=builder /app/node_modules ./node_modules
+COPY package.json yarn.lock ./
 
 # 创建数据目录并设置权限
 RUN mkdir -p /data && chown -R node:node /data
