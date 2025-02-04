@@ -14,20 +14,15 @@ COPY package.json yarn.lock ./
 RUN yarn global add @vue/cli-service 
 RUN yarn global add express cors
 RUN yarn install
+# 安装 tini
+RUN apt-get update && apt-get install -y tini
+
+# 创建数据目录并设置权限
+RUN mkdir -p /data && chown -R node:node /data
 RUN ls -la node_modules/.bin
 COPY . .
 # 执行构建
 RUN yarn build
-
-# 安装 tini
-RUN apt-get update && apt-get install -y tini
-FROM node:22.13.1
-# 复制构建产物和服务器文件
-COPY --from=builder /app/dist ./dist
-COPY server.js .
-
-# 创建数据目录并设置权限
-RUN mkdir -p /data && chown -R node:node /data
 
 # 使用非 root 用户运行
 USER node
