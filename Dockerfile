@@ -7,7 +7,7 @@ WORKDIR /app
 COPY package.json yarn.lock ./
 
 # 安装依赖（包括开发依赖）
-RUN yarn install --frozen-lockfile
+RUN yarn install && yarn add express
 
 # 复制其他源代码
 COPY . .
