@@ -1,5 +1,5 @@
 # 构建阶段
-FROM node:22.13.1 AS builder
+FROM node:22.13.1
 
 WORKDIR /app
 
