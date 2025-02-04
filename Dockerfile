@@ -8,17 +8,10 @@ ENV NODE_ENV=production \
     DISABLE_ESLINT=true \
     ESLINT_NO_DEV_ERRORS=true
 
-# 复制依赖文件
-COPY package.json yarn.lock ./
 
-# 安装依赖
-RUN set -eux; \
-    apk add --no-cache --virtual .build-deps \
-        python3 \
-        make \
-        g++; \
-    yarn install --frozen-lockfile; \
-    apk del .build-deps
+# 安装生产环境依赖
+COPY package.json yarn.lock ./
+RUN yarn install && yarn add express cors @vue/cli 
 
 # 复制源代码
 COPY . .
@@ -30,13 +23,7 @@ RUN yarn build
 FROM node:22.13.1
 
 # 安装 tini
-RUN apk add --no-cache tini
-
-WORKDIR /app
-
-# 安装生产环境依赖
-COPY package.json yarn.lock ./
-RUN yarn add express cors && yarn install --production --frozen-lockfile
+RUN apt-get update && apt-get install -y tini
 
 # 复制构建产物和服务器文件
 COPY --from=builder /app/dist ./dist
