@@ -20,10 +20,11 @@ RUN set -eux; \
     yarn install --frozen-lockfile; \
     apk del .build-deps
 
-# 复制源代码并构建
-RUN yarn install
+# 复制源代码
 COPY . .
-RUN yarn build
+
+# 执行构建
+RUN yarn build || (echo "Build failed" && yarn build --verbose && exit 1)
 
 # 运行阶段
 FROM node:22.13.1-alpine
