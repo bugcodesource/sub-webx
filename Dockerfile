@@ -1,5 +1,5 @@
 # 构建阶段
-FROM node:22.13.1
+FROM node:22.13.1-alpine AS build
 
 WORKDIR /app
 
@@ -8,25 +8,35 @@ ENV NODE_ENV=production \
     DISABLE_ESLINT=true \
     ESLINT_NO_DEV_ERRORS=true
 
-
 # 复制源代码
 COPY package.json yarn.lock ./
 
+# 安装依赖（包括开发依赖）
 RUN yarn install --frozen-lockfile --production=false
-RUN ls -la node_modules/.bin
-# 安装 tini
-# RUN apt-get install -y tini
 
-# 创建数据目录并设置权限
-RUN mkdir -p /data && chown -R node:node /data
-
+# 复制其他源代码
 COPY . .
+
 # 执行构建
 RUN yarn build
 
-# 使用非 root 用户运行
-USER node
+# 清理缓存
+RUN yarn cache clean
 
+# 最终运行阶段
+FROM node:22.13.1-alpine
+
+# 创建工作目录
+WORKDIR /app
+
+# 设置运行时环境变量
+ENV NODE_ENV=production \
+    PORT=8088
+
+# 安装运行时依赖（仅生产依赖）
+RUN yarn install --frozen-lockfile --production
+
+# 创建数据目录并设置权限
 # 设置环境变量
 ENV NODE_ENV=production \
     PORT=8088
@@ -40,9 +50,6 @@ VOLUME ["/data"]
 
 # 暴露端口
 EXPOSE 8088
-
-# 使用 tini 作为 init 进程
-ENTRYPOINT ["/sbin/tini", "--"]
 
 # 启动服务
 CMD ["node", "server.js"]
