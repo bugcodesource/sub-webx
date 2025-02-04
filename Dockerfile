@@ -14,13 +14,10 @@ COPY package.json yarn.lock ./
 RUN yarn global add @vue/cli-service 
 RUN yarn global add express cors
 RUN yarn install
-
+RUN ls -la node_modules/.bin
 COPY . .
 # 执行构建
 RUN yarn build
-
-# 运行阶段
-FROM node:22.13.1
 
 # 安装 tini
 RUN apt-get update && apt-get install -y tini
