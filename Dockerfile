@@ -21,7 +21,7 @@ RUN yarn build
 
 # 安装 tini
 RUN apt-get update && apt-get install -y tini
-
+FROM node:22.13.1
 # 复制构建产物和服务器文件
 COPY --from=builder /app/dist ./dist
 COPY server.js .
