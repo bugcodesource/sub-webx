@@ -7,7 +7,7 @@ WORKDIR /app
 COPY package.json yarn.lock ./
 
 # 安装依赖（包括开发依赖）
-RUN yarn install
+RUN yarn install --frozen-lockfile --production
 
 # 复制其他源代码
 COPY . .
@@ -30,11 +30,6 @@ ENV NODE_ENV=production \
 # 从构建阶段复制构建输出和必要的文件
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/server.js ./
-
-# 安装运行时依赖（仅生产依赖）
-COPY --from=builder /app/package.json ./
-COPY --from=builder /app/yarn.lock ./
-RUN yarn install --frozen-lockfile --production
 
 # 创建数据目录并设置权限
 RUN mkdir -p /data && chown -R node:node /data
