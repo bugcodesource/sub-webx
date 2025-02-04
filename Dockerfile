@@ -15,7 +15,7 @@ COPY package.json yarn.lock ./
 RUN yarn install --frozen-lockfile --production=false
 RUN ls -la node_modules/.bin
 # 安装 tini
-RUN apt-get update && apt-get install -y tini
+RUN apt-get install -y tini
 
 # 创建数据目录并设置权限
 RUN mkdir -p /data && chown -R node:node /data
