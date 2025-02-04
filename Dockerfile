@@ -9,12 +9,9 @@ ENV NODE_ENV=production \
     ESLINT_NO_DEV_ERRORS=true
 
 
-# 安装生产环境依赖
-COPY package.json yarn.lock ./
-RUN yarn install && yarn add express cors @vue/cli 
-
 # 复制源代码
 COPY . .
+RUN yarn install && yarn add express cors @vue/cli 
 
 # 执行构建
 RUN yarn build
