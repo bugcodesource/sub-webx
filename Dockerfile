@@ -11,7 +11,9 @@ ENV NODE_ENV=production \
 
 # 复制源代码
 COPY package.json yarn.lock ./
-RUN yarn install && yarn global add express cors @vue/cli 
+RUN yarn global add @vue/cli 
+RUN yarn global add express cors
+RUN yarn install
 
 COPY . .
 # 执行构建
