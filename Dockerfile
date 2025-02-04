@@ -1,5 +1,3 @@
-# syntax=docker/dockerfile:1
-
 # 构建阶段
 FROM node:22.13.1-alpine AS builder
 
